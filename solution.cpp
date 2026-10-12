@@ -22,6 +22,7 @@ struct NodeInfo {
 class Solution {
 private:
     unordered_map<int, NodeInfo*> nodeMap;
+    vector<TreeNode*> allNodes;
     int index;
     
     TreeNode* buildTree(const vector<int>& preorder, int depth, int parent) {
@@ -35,6 +36,7 @@ private:
         }
         
         TreeNode* node = new TreeNode(val);
+        allNodes.push_back(node);
         nodeMap[val] = new NodeInfo(depth, parent);
         
         node->left = buildTree(preorder, depth + 1, val);
@@ -49,6 +51,11 @@ public:
     void buildTreeFromPreorder(const vector<int>& preorder) {
         index = 0;
         nodeMap.clear();
+        // Clear previous tree nodes
+        for (TreeNode* node : allNodes) {
+            delete node;
+        }
+        allNodes.clear();
         buildTree(preorder, 0, -1); // root has depth 0 and parent -1
     }
     
@@ -66,6 +73,9 @@ public:
     ~Solution() {
         for (auto& pair : nodeMap) {
             delete pair.second;
+        }
+        for (TreeNode* node : allNodes) {
+            delete node;
         }
     }
 };
